@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Louis Lizzadro — Home{% endblock %}
+
+{% block content %}
+
+<section class="mb-12">
+    <h1 class="text-4xl font-bold text-slate-900 mb-3">Hi, I'm Louis.</h1>
+    <p class="text-lg text-slate-600 leading-relaxed">
+        Software developer and animal lover exploring life.
+    </p>
+</section>
+
+<section>
+    <h2 class="text-xl font-semibold text-slate-800 mb-5">Projects</h2>
+    <div class="flex flex-col gap-4">
+        {% for project in projects %}
+        <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm hover:shadow-md hover:border-indigo-200 transition-all">
+            <h3 class="font-semibold text-slate-900 mb-1">{{ project.name }}</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">{{ project.description }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+{% endblock %}
