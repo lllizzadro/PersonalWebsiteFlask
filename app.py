@@ -36,6 +36,10 @@ def add_message():
     db.close()
     return redirect(url_for('guestbook'))
 
+@app.route('/dice')
+def dice():
+    return render_template('dice.html')
+
 
 def get_db():
     db = sqlite3.connect('guestbook.db')

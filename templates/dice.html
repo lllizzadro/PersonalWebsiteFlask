@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Louis Lizzadro — Dice{% endblock %}
+
+{% block content %}
+
+Number of Dice <input type="number" id="count" value="1" min="1" max="5" required><br>
+Number of Sides <input type="number" id="sides" value="6" min="1" max="100" required><br>
+<button type="button" id="roll-btn" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors">Roll</button>
+
+<div id="results" class="whitespace-pre-line"></div>
+
+<script src="{{url_for('static', filename='js/dice.js') }}"></script>
+{% endblock %}
+
