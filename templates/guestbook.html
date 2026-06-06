@@ -5,16 +5,25 @@
 <form method="POST" action="/guestbook">
     <input type="text" name="name" placeholder="Your Name" required>
     <textarea name="message" placeholder="Your Message" required></textarea>
-    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md">Sign Guestbook</button>
+    <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors">Sign Guestbook</button>
 </form>
 
 <table class="w-full">
-{% for entry in entries %}
-<tr class="border-b border-slate-200">
-    <td>{{ entry['name'] }}</td>
-    <td>{{ entry['message'] }}</td>
-    <td>{{ entry['timestamp'] }}</td>
-</tr>
-    {% endfor %}
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Message</th>
+            <th>Timestamp</th>
+        </tr>
+    </thead>
+        <tbody>
+            {% for entry in entries %}
+                <tr class="border-b border-slate-200">
+                    <td>{{ entry['name'] }}</td>
+                    <td>{{ entry['message'] }}</td>
+                    <td>{{ entry['timestamp'] }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
 </table>
 {% endblock %}
