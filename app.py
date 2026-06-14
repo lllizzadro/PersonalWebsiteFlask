@@ -37,10 +37,6 @@ def add_message():
     db.close()
     return redirect(url_for('guestbook'))
 
-@app.route('/dice')
-def dice():
-    return render_template('dice.html')
-
 @app.template_filter('prettydate')
 def prettydate(timestamp):
     dt = datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S')
