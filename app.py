@@ -1,4 +1,5 @@
 from flask import Flask, render_template, redirect, url_for, request
+from datetime import datetime, timezone
 import sqlite3
 
 app = Flask(__name__)
@@ -40,6 +41,15 @@ def add_message():
 def dice():
     return render_template('dice.html')
 
+@app.template_filter('prettydate')
+def prettydate(timestamp):
+    dt = datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S')
+    return dt.strftime('%b %d, %Y %I:%M %p')
+
+@app.template_filter('isodate')
+def isodate(timestamp):
+    dt = datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S').replace(tzinfo=timezone.utc)
+    return dt.isoformat()
 
 def get_db():
     db = sqlite3.connect('guestbook.db')
