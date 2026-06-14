@@ -7,7 +7,7 @@ app = Flask(__name__)
 PROJECTS = [
     {
         'name': 'Personal Website',
-        'description': 'Website to host personal content and projects.',
+        'description': 'Website to host personal content.',
     },
     {
         'name': 'Music Generating Neural Network',

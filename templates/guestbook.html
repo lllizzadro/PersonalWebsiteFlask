@@ -2,20 +2,28 @@
 {% block title %}Louis Lizzadro — Guestbook{% endblock %}
 
 {% block content %}
+
+<section class="mb-12">
+    <h1 class="text-4xl font-bold text-neutral-900 dark:text-neutral-100 mb-3">Guestbook</h1>
+    <p class="text-lg text-neutral-600 dark:text-neutral-400 leading-relaxed">Drop a message for me.</p>
+</section>
+
 <form method="POST" action="/guestbook" class="w-full flex flex-col gap-3 mb-8">
-    <input type="text" name="name" placeholder="Your Name" class="w-full border border-slate-300 rounded-md p-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" required>
-    <textarea name="message" placeholder="Your Message" class="w-full border border-slate-300 rounded-md p-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" required></textarea>
-    <button type="submit" class="self-center bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors">Sign Guestbook</button>
+    <input type="text" name="name" placeholder="Your Name" class="w-full bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 transition-colors border border-neutral-300 dark:border-neutral-700 rounded-md p-3 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500" required>
+    <textarea name="message" placeholder="Your Message" class="w-full bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 transition-colors border border-neutral-300 dark:border-neutral-700 rounded-md p-3 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500" required></textarea>
+    <button type="submit" class="self-center bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition-colors">Sign Guestbook</button>
 </form>
+
+<h2 class="text-xl font-semibold text-neutral-800 dark:text-neutral-200 mb-5">Messages</h2>
 
 <div class="flex flex-col gap-4">
     {% for entry in entries %}
-        <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm hover:shadow-md hover:border-indigo-200 transition-all">
+        <div class="bg-white dark:bg-neutral-800 border dark:border-neutral-700 border-neutral-200 rounded-xl p-5 shadow-sm hover:shadow-md dark:hover:bg-neutral-700 hover:border-purple-200 transition-all">
             <div class="flex items-center justify-between mb-1">
-                <span class="font-semibold text-slate-900">{{ entry['name'] }}</span>
-                <time datetime="{{ entry['timestamp'] | isodate }}" class="text-xs text-slate-400">{{ entry['timestamp'] | prettydate }}</time>
+                <span class="font-semibold text-neutral-900 dark:text-neutral-100">{{ entry['name'] }}</span>
+                <time datetime="{{ entry['timestamp'] | isodate }}" class="text-xs text-neutral-400 dark:text-neutral-500">{{ entry['timestamp'] | prettydate }}</time>
             </div>
-            <p class="text-sm text-slate-600 leading-relaxed">{{ entry['message'] }}</p>
+            <p class="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed">{{ entry['message'] }}</p>
         </div>
     {% endfor %}
 </div>
