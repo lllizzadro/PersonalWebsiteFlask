@@ -4,8 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Louis Lizzadro{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>tailwind.config = { darkMode: 'class' }</script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: { extend: { fontFamily: {
+          sans: ['Inter', 'sans-serif'],
+          mono: ['Space Mono', 'monospace'],
+        } } }
+      }
+    </script>
+    <style>
+      h1, h2, h3 { font-family: 'Space Mono', monospace; }
+    </style>
     <script>
         if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
           document.documentElement.classList.add('dark');
@@ -18,7 +32,7 @@
 
     <nav class="bg-white dark:bg-neutral-800 dark:border-neutral-700 border-b border-neutral-200">
         <div class="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
-            <a href="/" class="font-bold text-neutral-900 dark:text-neutral-100 hover:text-purple-600 dark:hover:text-purple-600 transition-colors">
+            <a href="/" class="font-mono font-bold text-neutral-900 dark:text-neutral-100 hover:text-purple-600 dark:hover:text-purple-600 transition-colors">
                 Louis Lizzadro
             </a>
             <div class="flex gap-6 text-sm font-medium text-neutral-600 dark:text-neutral-400">
