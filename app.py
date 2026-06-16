@@ -5,6 +5,7 @@ import os
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'dev')
+DB_PATH = os.environ.get('DATABASE_PATH', 'guestbook.db')
 
 PROJECTS = [
     {
@@ -56,7 +57,7 @@ def isodate(timestamp):
 
 def get_db():
     if 'db' not in g:
-        g.db = sqlite3.connect('guestbook.db')
+        g.db = sqlite3.connect(DB_PATH)
         g.db.row_factory = sqlite3.Row
     return g.db
 
@@ -73,7 +74,7 @@ def init_db(db):
         db.commit()
     return
 
-db = sqlite3.connect('guestbook.db')
+db = sqlite3.connect(DB_PATH)
 init_db(db)
 db.close()
 
