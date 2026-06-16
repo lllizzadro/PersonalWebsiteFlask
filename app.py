@@ -1,8 +1,11 @@
-from flask import Flask, render_template, redirect, url_for, request
+from flask import Flask, render_template, redirect, url_for, request, g, flash
 from datetime import datetime, timezone
 import sqlite3
+import os
 
 app = Flask(__name__)
+app.secret_key = os.environ.get('SECRET_KEY', 'dev')
+DB_PATH = os.environ.get('DATABASE_PATH', 'guestbook.db')
 
 PROJECTS = [
     {
@@ -30,11 +33,16 @@ def guestbook():
 @app.route('/guestbook', methods=['POST'])
 def add_message():
     db = get_db()
-    name = request.form['name']
-    message = request.form['message']
+    name = request.form.get('name', '').strip()
+    message = request.form.get('message', '').strip()
+    if not name or not message:
+        flash('Name and message are required.')
+        return redirect(url_for('guestbook'))
+    if len(name) > 50 or len(message) > 1000:
+        flash('Name and message must be less than 50 and 1000 characters respectively.')
+        return redirect(url_for('guestbook'))
     db.execute("INSERT INTO guestbook (name, message) VALUES (?, ?)", (name, message))
     db.commit()
-    db.close()
     return redirect(url_for('guestbook'))
 
 @app.template_filter('prettydate')
@@ -48,9 +56,17 @@ def isodate(timestamp):
     return dt.isoformat()
 
 def get_db():
-    db = sqlite3.connect('guestbook.db')
-    db.row_factory = sqlite3.Row
-    return db
+    if 'db' not in g:
+        g.db = sqlite3.connect(DB_PATH)
+        g.db.row_factory = sqlite3.Row
+    return g.db
+
+@app.teardown_appcontext
+def close_db(exception):
+    db = g.pop('db', None)
+    if db is not None:
+        db.close()
+
 
 def init_db(db):
     if db.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='guestbook'").fetchone() is None:
@@ -58,7 +74,7 @@ def init_db(db):
         db.commit()
     return
 
-db = get_db()
+db = sqlite3.connect(DB_PATH)
 init_db(db)
 db.close()
 
