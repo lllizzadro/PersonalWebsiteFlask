@@ -45,6 +45,10 @@ def add_message():
     db.commit()
     return redirect(url_for('guestbook'))
 
+@app.route('/resume')
+def resume():
+    return render_template('resume.html')
+
 @app.template_filter('prettydate')
 def prettydate(timestamp):
     dt = datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S')
