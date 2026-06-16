@@ -38,7 +38,11 @@ Chosen over PythonAnywhere/Render to learn real deployment skills + because Fly 
 
 **✅ DEPLOYED (2026-06-16):** live at https://lllizzadro.fly.dev — first `fly deploy` succeeded and the URL was confirmed up. Volume-persistence check (sign guestbook → redeploy → entry still there) being verified. Useful ops: `fly status`, `fly open`, `fly logs`, `fly ssh console` (root shell; only `/data` persists), `fly ssh sftp` (pull/push the DB file).
 
-**Cross-machine note:** the Fly **web dashboard** (fly.io/dashboard) can monitor/manage from any OS but **cannot deploy code**. To deploy from Windows either install `flyctl` there (`iwr https://fly.io/install.ps1 -useb | iex`) or — preferred follow-up — add a **GitHub Actions** workflow that runs `fly deploy` on push to `main`, so any machine with `git push` can ship. No local Docker needed either way (Fly builds remotely).
+**CI/CD — push-to-deploy (set up 2026-06-16):** `fly launch` auto-generated `.github/workflows/fly-deploy.yml`, which runs `flyctl deploy --remote-only` **on push to `main`** (only `main` — pushing `dev` or opening a PR does NOT deploy; the deploy fires when a PR is **merged** to `main`, i.e. `main` = production). So the workflow is: do work on `dev` → PR → merge to `main` to go live. To finish enabling it:
+- The workflow needs a `FLY_API_TOKEN` GitHub Actions secret: `fly tokens create deploy`, then add it under GitHub repo → Settings → Secrets and variables → Actions (name exactly `FLY_API_TOKEN`).
+- Pushing the workflow file requires a PAT with the **`workflow`** scope (or use an SSH remote) — GitHub rejects workflow-file changes from a token lacking it.
+
+**Cross-machine note:** with the CI above, any machine that can `git push` to `main` (incl. Windows, browser-only) ships automatically — no local `flyctl`/Docker needed. For manual deploys from Windows instead, install flyctl: `iwr https://fly.io/install.ps1 -useb | iex`. The Fly **web dashboard** (fly.io/dashboard) monitors/manages from any OS but cannot deploy code itself.
 
 ## Status
 - ✅ Home (`/`) — bio + projects list
