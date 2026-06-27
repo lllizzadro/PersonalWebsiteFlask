@@ -21,24 +21,28 @@
         </div>
     </div>
 
-    <div class="premium-glass rounded-xl">
-        <div class="flex items-center justify-between px-4 py-3 border-b border-white/10">
-            <div class="flex gap-1.5">
-                <span class="w-3 h-3 rounded-full bg-white/20"></span>
-                <span class="w-3 h-3 rounded-full bg-white/20"></span>
-                <span class="w-3 h-3 rounded-full bg-white/20"></span>
-            </div>
-            <span class="text-xs font-mono text-neutral-400">main.py</span>
+    <div class="premium-glass rounded-xl p-6">
+        <div class="flex items-center gap-2 text-sm text-neutral-300 mb-5">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]"></span>
+            Open to opportunities
         </div>
-<pre class="p-4 text-sm font-mono leading-relaxed overflow-x-auto text-neutral-300"><code><span class="text-[#ff71ce]">class</span> <span class="text-[#fffb96]">SoftwareDeveloper</span>:
-    <span class="text-[#ff71ce]">def</span> <span class="text-[#01cdfe]">__init__</span>(<span class="text-[#b967ff]">self</span>):
-        <span class="text-[#b967ff]">self</span>.name = <span class="text-[#05ffa1]">"Louis"</span>
-        <span class="text-[#b967ff]">self</span>.focus = <span class="text-[#05ffa1]">"Exploration"</span>
-        <span class="text-[#b967ff]">self</span>.passion = [<span class="text-[#05ffa1]">"tech"</span>, <span class="text-[#05ffa1]">"music"</span>,
-                        <span class="text-[#05ffa1]">"animals"</span>, <span class="text-[#05ffa1]">"travel"</span>]
-
-    <span class="text-[#ff71ce]">def</span> <span class="text-[#01cdfe]">say_hi</span>(<span class="text-[#b967ff]">self</span>):
-        <span class="text-[#ff71ce]">return</span> <span class="text-[#05ffa1]">"Thanks for stopping by!"</span></code></pre>
+        <p class="text-xs font-mono uppercase tracking-widest text-neutral-500 mb-4">Currently</p>
+        <dl class="text-sm">
+            <div class="flex justify-between gap-4 py-2 border-t border-white/10">
+                <dt class="text-neutral-500">Building</dt>
+                <dd class="text-neutral-100 text-right">Portal &amp; Quill</dd>
+            </div>
+            <div class="flex justify-between gap-4 py-2 border-t border-white/10">
+                <dt class="text-neutral-500">Learning</dt>
+                <dd class="text-neutral-100 text-right">Front-end Development</dd>
+            </div>
+        </dl>
+        <div class="flex flex-wrap gap-2 mt-5">
+            <span class="text-xs font-mono bg-purple-500/15 text-purple-200 border border-purple-400/50 rounded-full px-2 py-0.5">C#</span>
+            <span class="text-xs font-mono bg-purple-500/15 text-purple-200 border border-purple-400/20 rounded-full px-2 py-0.5">Python</span>
+            <span class="text-xs font-mono bg-purple-500/15 text-purple-200 border border-purple-400/20 rounded-full px-2 py-0.5">SQL</span>
+            <span class="text-xs font-mono bg-cyan-500/15 text-cyan-200 border border-cyan-400/20 rounded-full px-2 py-0.5">Flask</span>
+        </div>
     </div>
 </section>
 
@@ -51,7 +55,10 @@
             <p class="text-sm text-neutral-400 leading-relaxed">{{ project.description }}</p>
             <div class="flex flex-wrap gap-2 mt-3">
                 {% for t in project.tech %}
-                <span class="text-xs font-mono text-neutral-300 bg-white/10 border border-white/10 rounded-full px-2 py-0.5">{{ t }}</span>
+                {% if t in ['Python', 'C#', 'SQL', 'CSS'] %}{% set tint = 'bg-purple-500/15 text-purple-200 border-purple-400/20' %}
+                {% elif t in ['Docker', 'Fly.io'] %}{% set tint = 'bg-amber-500/15 text-amber-200 border-amber-400/20' %}
+                {% else %}{% set tint = 'bg-cyan-500/15 text-cyan-200 border-cyan-400/20' %}{% endif %}
+                <span class="text-xs font-mono {{ tint }} border rounded-full px-2 py-0.5">{{ t }}</span>
                 {% endfor %}
             </div>
             <div class="flex gap-4 mt-4 text-sm">
