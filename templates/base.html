@@ -10,7 +10,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
-        darkMode: 'class',
         theme: { extend: { fontFamily: {
           sans: ['Inter', 'sans-serif'],
           mono: ['Space Mono', 'monospace'],
@@ -18,44 +17,40 @@
       }
     </script>
     <style>
-      h1, h2, h3 { font-family: 'Space Mono', monospace; }
-    </style>
-    <script>
-        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-          document.documentElement.classList.add('dark');
-        } else {
-          document.documentElement.classList.remove('dark');
+        body {
+            background:
+                radial-gradient(circle at 70% 25%, rgba(147, 51, 234, 0.12), transparent 35%),
+                radial-gradient(circle at 20% 70%, rgba(126, 34, 206, 0.08), transparent 30%),
+                #080911
         }
-      </script>
+        h1, h2, h3 { font-family: 'Space Mono', monospace; }
+    </style>
 </head>
-<body class="bg-neutral-50 dark:bg-neutral-900 text-neutral-900 dark:text-neutral-50 min-h-screen flex flex-col">
+<body class="text-neutral-50 min-h-screen flex flex-col">
 
-    <nav class="relative bg-white dark:bg-neutral-800 dark:border-neutral-700 border-b border-neutral-200">
-        <div class="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
-            <a href="/" class="font-mono font-bold text-neutral-900 dark:text-neutral-100 hover:text-purple-600 dark:hover:text-purple-600 transition-colors">
+    <nav class="relative bg-white/5 backdrop-blur-sm backdrop-saturate-150 border-b border-white/20">
+        <div class="{% block main_width %}max-w-3xl{% endblock %} mx-auto px-6 py-4 flex items-center justify-between">
+            <a href="/" class="flex items-center gap-2 font-mono font-bold text-neutral-100 hover:text-purple-600 transition-colors">
+                <span class="text-purple-600">&lt;/&gt;</span>
                 Louis Lizzadro
             </a>
             <div class="flex items-center gap-6">
-                <div class="hidden md:flex gap-6 text-sm font-medium font-mono text-neutral-600 dark:text-neutral-400">
+                <div class="hidden md:flex gap-6 text-sm font-medium font-mono text-neutral-400">
                     <a href="/" class="hover:text-purple-600 transition-colors {% if request.path == '/' %}text-purple-600{% endif %}">Home</a>
                     <a href="/guestbook" class="hover:text-purple-600 transition-colors {% if request.path == '/guestbook' %}text-purple-600{% endif %}">Guestbook</a>
                     <a href="/resume" class="hover:text-purple-600 transition-colors {% if request.path == '/resume' %}text-purple-600{% endif %}">Resume</a>
                 </div>
-                <button id="theme-toggle" aria-label="Toggle dark mode" class="text-neutral-600 dark:text-neutral-400 hover:text-purple-600 transition-colors">
-                    <span class="dark:hidden">🌙</span>
-                    <span class="hidden dark:inline">☀️</span>
-                </button>
-                <button id="nav-toggle" aria-label="Toggle menu" class="md:hidden text-neutral-600 dark:text-neutral-400 hover:text-purple-600 transition-colors">☰</button>
+                <button id="nav-toggle" aria-label="Toggle menu" class="md:hidden text-neutral-400 hover:text-purple-600 transition-colors">☰</button>
             </div>
         </div>
-        <div id="mobile-menu" class="hidden md:hidden absolute right-1 top-full mt-1 w-40 z-50 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg shadow-lg p-2 space-y-1 text-lg font-medium font-mono text-neutral-600 dark:text-neutral-400">
+        <div id="mobile-menu" class="hidden md:hidden border-t border-white/20 px-6 py-3 space-y-1 text-lg font-medium font-mono text-neutral-400">
             <a href="/" class="block hover:text-purple-600 transition-colors {% if request.path == '/' %}text-purple-600{% endif %}">Home</a>
             <a href="/guestbook" class="block hover:text-purple-600 transition-colors {% if request.path == '/guestbook' %}text-purple-600{% endif %}">Guestbook</a>
             <a href="/resume" class="block hover:text-purple-600 transition-colors {% if request.path == '/resume' %}text-purple-600{% endif %}">Resume</a>
         </div>
     </nav>
 
-    <main class="flex-1 max-w-3xl mx-auto px-6 py-12 w-full">
+    <main class="flex-1 {{ self.main_width() }} mx-auto px-6 py-12 w-full">
         {% with messages = get_flashed_messages() %}
             {% if messages %}
                 <div class="flash-messages">
@@ -68,8 +63,8 @@
         {% block content %}{% endblock %}
     </main>
 
-    <footer class="border-t border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 mt-auto">
-        <div class="max-w-3xl mx-auto px-6 py-5 flex items-center justify-between text-sm text-neutral-500 dark:text-neutral-400">
+    <footer class="border-t border-white/20 bg-white/5 backdrop-blur-sm backdrop-saturate-150 mt-auto">
+        <div class="{{ self.main_width() }} mx-auto px-6 py-5 flex items-center justify-between text-sm text-neutral-400">
             <span>&copy; 2026 Louis Lizzadro</span>
             <div class="flex gap-5">
                 <a href="https://github.com/lllizzadro" target="_blank" rel="noopener noreferrer"
@@ -80,7 +75,6 @@
         </div>
     </footer>
 
-    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
     <script src="{{ url_for('static', filename='js/nav.js') }}"></script>
 </body>
 </html>
