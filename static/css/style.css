@@ -1,0 +1,90 @@
+body { background-color: #080911; }
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;   /* fallback for older browsers */
+    height: 100lvh;  /* largest viewport height — stable while the mobile toolbar shows/hides */
+    z-index: -1;
+    background-color: #080911;
+    background-image:
+        /*
+        radial-gradient(circle at 70% 25%, rgba(147, 51, 234, 0.12), transparent 35%),
+        radial-gradient(circle at 20% 70%, rgba(126, 34, 206, 0.08), transparent 30%),
+        */
+        url("../images/purpleCosmic.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+h1, h2, h3 { font-family: 'Space Mono', monospace; }
+
+/* Dimensional "premium" glass: near-black base + faint internal highlight + purple edge sheen */
+.premium-glass {
+    position: relative;
+    overflow: hidden;
+    background:
+        linear-gradient(135deg,
+            rgba(255, 255, 255, 0.05),
+            rgba(255, 255, 255, 0.015) 45%,
+            rgba(147, 51, 234, 0.05)),
+        rgba(7, 5, 20, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.11);
+    box-shadow:
+        0 24px 70px rgba(0, 0, 0, 0.30),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(4px) saturate(125%);
+    -webkit-backdrop-filter: blur(4px) saturate(125%);
+}
+.premium-glass::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(115deg,
+        rgba(255, 255, 255, 0.08),
+        transparent 22%,
+        transparent 75%,
+        rgba(147, 51, 234, 0.07));
+}
+/* keep panel content above the corner sheen */
+.premium-glass > * { position: relative; z-index: 1; }
+
+/* hover lift, only for cards that opt in with the .interactive class */
+.premium-glass.interactive {
+    transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+}
+.premium-glass.interactive:hover {
+    transform: translateY(-3px);
+    border-color: rgba(168, 85, 247, 0.42);
+    box-shadow:
+        0 28px 80px rgba(0, 0, 0, 0.38),
+        0 0 32px rgba(147, 51, 234, 0.10),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* Active nav link color — driven by aria-current (set in base.html) */
+nav a[aria-current="page"] { color: rgb(147 51 234); }
+
+/* Desktop nav: sliding underline that grows from the center */
+.nav-link { position: relative; }
+.nav-link::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    right: 50%;
+    bottom: -0.5rem;
+    height: 2px;
+    border-radius: 999px;
+    background: rgb(147 51 234);
+    transition: left .18s ease, right .18s ease;
+}
+.nav-link:hover::after,
+.nav-link[aria-current="page"]::after {
+    left: 0;
+    right: 0;
+}

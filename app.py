@@ -10,13 +10,25 @@ DB_PATH = os.environ.get('DATABASE_PATH', 'guestbook.db')
 PROJECTS = [
     {
         'name': 'Personal Website',
-        'description': 'Website to host personal content.',
+        'description': 'Personal website deployed on an automated CI/CD pipeline.',
+        'tech': ['Python', 'Flask', 'Jinja', 'Tailwind', 'Docker'],
+        'live': 'https://lllizzadro.fly.dev',
+        'source': 'https://github.com/lllizzadro/PersonalWebsiteFlask'
+    },
+    {
+        'name': 'Portal & Quill',
+        'description': 'Website for a fantasy/sci-fi bookstore.',
+        'tech': ['Python', 'Flask', 'Jinja', 'CSS', 'Docker'],
+        'live': 'https://portalandquill.com',
+        'source': 'https://github.com/lllizzadro/PortalAndQuill'
     },
     {
         'name': 'Music Generating Neural Network',
         'description': 'Generative Adversarial Network and Recurrent Neural Network that'
-                       ' produced music after learning on MIDI data.',
-    },
+                       ' produce music after learning on MIDI data.',
+        'tech': ['Python', 'TensorFlow', 'Keras', 'Pandas', 'NumPy'],
+        'source': 'https://colab.research.google.com/drive/1FC11WSZKx_-6bCRr5oG6zxEbdJpZ71eo?usp=drive_link'
+    }
 ]
 
 

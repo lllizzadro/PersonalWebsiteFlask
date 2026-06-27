@@ -16,30 +16,7 @@
         } } }
       }
     </script>
-    <style>
-        body { background-color: #080911; }
-        body::before {
-            content: "";
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;   /* fallback for older browsers */
-            height: 100lvh;  /* largest viewport height — stable while the mobile toolbar shows/hides */
-            z-index: -1;
-            background-color: #080911;
-            background-image:
-                /*
-                radial-gradient(circle at 70% 25%, rgba(147, 51, 234, 0.12), transparent 35%),
-                radial-gradient(circle at 20% 70%, rgba(126, 34, 206, 0.08), transparent 30%),
-                */
-                url("{{ url_for('static', filename='images/purpleCosmic.jpg') }}");
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-        }
-        h1, h2, h3 { font-family: 'Space Mono', monospace; }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body class="text-neutral-50 min-h-screen flex flex-col">
 
@@ -51,17 +28,17 @@
             </a>
             <div class="flex items-center gap-6">
                 <div class="hidden md:flex gap-6 text-sm font-medium font-mono text-neutral-400">
-                    <a href="/" class="hover:text-purple-600 transition-colors {% if request.path == '/' %}text-purple-600{% endif %}">Home</a>
-                    <a href="/guestbook" class="hover:text-purple-600 transition-colors {% if request.path == '/guestbook' %}text-purple-600{% endif %}">Guestbook</a>
-                    <a href="/resume" class="hover:text-purple-600 transition-colors {% if request.path == '/resume' %}text-purple-600{% endif %}">Resume</a>
+                    <a href="/" {% if request.path == '/' %}aria-current="page"{% endif %} class="nav-link hover:text-purple-600 transition-colors">Home</a>
+                    <a href="/guestbook" {% if request.path == '/guestbook' %}aria-current="page"{% endif %} class="nav-link hover:text-purple-600 transition-colors">Guestbook</a>
+                    <a href="/resume" {% if request.path == '/resume' %}aria-current="page"{% endif %} class="nav-link hover:text-purple-600 transition-colors">Resume</a>
                 </div>
                 <button id="nav-toggle" aria-label="Toggle menu" class="md:hidden text-neutral-400 hover:text-purple-600 transition-colors">☰</button>
             </div>
         </div>
         <div id="mobile-menu" class="hidden md:hidden border-t border-white/20 px-6 py-3 space-y-1 text-lg font-medium font-mono text-neutral-400">
-            <a href="/" class="block hover:text-purple-600 transition-colors {% if request.path == '/' %}text-purple-600{% endif %}">Home</a>
-            <a href="/guestbook" class="block hover:text-purple-600 transition-colors {% if request.path == '/guestbook' %}text-purple-600{% endif %}">Guestbook</a>
-            <a href="/resume" class="block hover:text-purple-600 transition-colors {% if request.path == '/resume' %}text-purple-600{% endif %}">Resume</a>
+            <a href="/" {% if request.path == '/' %}aria-current="page"{% endif %} class="block hover:text-purple-600 transition-colors">Home</a>
+            <a href="/guestbook" {% if request.path == '/guestbook' %}aria-current="page"{% endif %} class="block hover:text-purple-600 transition-colors">Guestbook</a>
+            <a href="/resume" {% if request.path == '/resume' %}aria-current="page"{% endif %} class="block hover:text-purple-600 transition-colors">Resume</a>
         </div>
     </nav>
 
