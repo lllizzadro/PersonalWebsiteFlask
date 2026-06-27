@@ -12,13 +12,14 @@ Louis Lizzadro's personal site — a standalone Flask app, **live at https://lll
 - **Always parameterize queries** (`?` placeholders) — never string-format user input.
 - **Secrets via env**: `SECRET_KEY = os.environ.get('SECRET_KEY', 'dev')` signs the session cookie / powers `flash()`. `'dev'` is local-only; prod sets a real key via Fly secrets.
 - **POST/Redirect/GET** for state-changing forms. `add_message()` validates server-side (strip, reject empty, name ≤ 50 / message ≤ 1000) and reports failures with `flash()` + redirect; `base.html` renders flashes above `{% block content %}`.
-- **Client JS** in `static/js/`, loaded via `url_for('static', ...)`: `localtime.js` (local timestamps), `nav.js` (mobile menu toggle).
+- **Client JS** in `static/js/`, loaded via `url_for('static', ...)`: `theme.js` (dark toggle), `localtime.js` (local timestamps), `nav.js` (mobile menu toggle).
 
 ## Theming & UI
 - **Accent** `purple-600`; **gray base** `neutral` (not `slate` — too blue under purple). Page-title `h1`s are `purple-600`.
 - **Fonts** (Google Fonts): Inter (body) + Space Mono (headings, brand, nav). `tailwind.config fontFamily` sets `sans`=Inter, `mono`=Space Mono; a base `<style> h1,h2,h3` rule applies Space Mono to headings; brand + nav links use the `font-mono` class.
-- **Dark-only theme** (light mode removed 2026-06-17): the site renders dark unconditionally — no theme toggle, no `theme.js`, no `darkMode` config, no inline theme script. All former `dark:` variants were flattened to plain defaults (e.g. `bg-neutral-900`, `text-neutral-400`). Cards: `bg-neutral-800`, `border-neutral-700`, `hover:bg-neutral-700`, `hover:border-purple-400`. (If light mode is ever wanted again, reintroduce `darkMode: 'class'` + the `dark:` variants.)
-- **Nav** (`base.html`): responsive — inline links on `md+` (`hidden md:flex`); a hamburger (`#nav-toggle`, `md:hidden`) opens the `#mobile-menu` dropdown (`nav.js` toggles `hidden`). Active page is highlighted purple via `{% if request.path == '/...' %}text-purple-600{% endif %}` on each link (exact `==` — `in`/`startswith` would mis-highlight).
+- **Dark mode**: Tailwind `darkMode: 'class'`. An inline `<head>` script applies the saved/system theme before paint (no flash); `theme.js` toggles the `dark` class on `<html>` and saves to `localStorage`; sun/moon icons swap via `dark:hidden` / `hidden dark:inline`.
+  - Dark-mode gotchas: shadow-based hover is invisible on dark, so cards use `dark:hover:bg-neutral-700`. A plain `hover:` color can also lose to a `dark:` base style on specificity/source-order, so hover colors that must show in dark need a `dark:hover:` twin (cards use `hover:border-purple-400 dark:hover:border-purple-400`).
+- **Nav** (`base.html`): responsive — inline links on `md+` (`hidden md:flex`); a hamburger (`#nav-toggle`, `md:hidden`) opens the `#mobile-menu` dropdown (`nav.js` toggles `hidden`); theme toggle always visible. Active page is highlighted purple via `{% if request.path == '/...' %}text-purple-600{% endif %}` on each link (exact `==` — `in`/`startswith` would mis-highlight).
 - **Timestamps**: stored UTC, shown in each visitor's local time — `<time>` carries an ISO-UTC `datetime` (`| isodate` filter) with a `| prettydate` fallback; `localtime.js` rewrites it via `toLocaleString`.
 
 ## Run
@@ -38,7 +39,7 @@ LAN testing (view on phone): `python -m flask --app app run --host=0.0.0.0 --por
 - ✅ **Home** — bio + project cards
 - ✅ **Guestbook** — SQLite, card layout, local-time timestamps, server-side validation + flash feedback
 - ✅ **Resume** — themed HTML page + "Download PDF" button (`static/resume.pdf`); phone number omitted (public page)
-- ✅ Theming (dark-only), responsive hamburger nav, and Fly.io deploy with push-to-deploy CI/CD all complete
+- ✅ Theming, dark mode, responsive hamburger nav, and Fly.io deploy with push-to-deploy CI/CD all complete
 
 ## Ideas / deferred
 - **Curated-links wall** (preferred guestbook glow-up): visitors submit links (URL + title + blurb) → a growing curated feed. Reuse the form/SQLite/PRG/validation infra; new/extended table; **validate URL scheme (http/https allow-list)**; open links in a new tab with `rel="noopener noreferrer"`; pairs with CSRF since it's a public write endpoint.

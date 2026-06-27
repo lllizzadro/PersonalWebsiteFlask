@@ -82,8 +82,5 @@ db = sqlite3.connect(DB_PATH)
 init_db(db)
 db.close()
 
-
-        
-
 if __name__ == '__main__':
     app.run(debug=True)
