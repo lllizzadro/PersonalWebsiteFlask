@@ -35,7 +35,7 @@
                 <button id="nav-toggle" aria-label="Toggle menu" class="md:hidden text-neutral-400 hover:text-purple-600 transition-colors">☰</button>
             </div>
         </div>
-        <div id="mobile-menu" class="hidden md:hidden border-t border-white/20 px-6 py-3 space-y-1 text-lg font-medium font-mono text-neutral-400">
+        <div id="mobile-menu" class="md:hidden px-6 space-y-1 text-lg font-medium font-mono text-neutral-400">
             <a href="/" {% if request.path == '/' %}aria-current="page"{% endif %} class="block hover:text-purple-600 transition-colors">Home</a>
             <a href="/guestbook" {% if request.path == '/guestbook' %}aria-current="page"{% endif %} class="block hover:text-purple-600 transition-colors">Guestbook</a>
             <a href="/resume" {% if request.path == '/resume' %}aria-current="page"{% endif %} class="block hover:text-purple-600 transition-colors">Resume</a>
