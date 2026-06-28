@@ -1,4 +1,5 @@
 from flask import Flask, render_template, redirect, url_for, request, g, flash
+from flask_wtf.csrf import CSRFProtect
 from datetime import datetime, timezone
 import sqlite3
 import os
@@ -9,6 +10,7 @@ app = Flask(__name__)
 # url_for(_external=True) / request.base_url emit correct https:// URLs (OG tags, etc.).
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
 app.secret_key = os.environ.get('SECRET_KEY', 'dev')
+csrf = CSRFProtect(app)
 DB_PATH = os.environ.get('DATABASE_PATH', 'guestbook.db')
 
 PROJECTS = [
@@ -48,6 +50,8 @@ def guestbook():
 
 @app.route('/guestbook', methods=['POST'])
 def add_message():
+    if request.form.get('website'):
+        return redirect(url_for('guestbook'))
     db = get_db()
     name = request.form.get('name', '').strip()
     message = request.form.get('message', '').strip()
