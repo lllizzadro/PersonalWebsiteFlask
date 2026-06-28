@@ -116,3 +116,26 @@ nav a[aria-current="page"] { color: rgb(147 51 234); }
     opacity: 1;
     border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
+
+.js .reveal {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity .5s ease, transform .5s ease;
+}
+
+.reveal.is-visible {
+    opacity: 1;
+    transform: none;
+}
+
+/* Bounded stagger so cards cascade without later ones lagging on scroll */
+.reveal:nth-child(3n+2) { transition-delay: 80ms; }
+.reveal:nth-child(3n+3) { transition-delay: 160ms; }
+
+@media (prefers-reduced-motion: reduce) {
+    .js .reveal {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+}
