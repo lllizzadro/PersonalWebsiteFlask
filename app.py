@@ -2,8 +2,12 @@ from flask import Flask, render_template, redirect, url_for, request, g, flash
 from datetime import datetime, timezone
 import sqlite3
 import os
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 app = Flask(__name__)
+# Fly terminates TLS and proxies to gunicorn over http; trust its forwarded headers so
+# url_for(_external=True) / request.base_url emit correct https:// URLs (OG tags, etc.).
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
 app.secret_key = os.environ.get('SECRET_KEY', 'dev')
 DB_PATH = os.environ.get('DATABASE_PATH', 'guestbook.db')
 
