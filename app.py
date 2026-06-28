@@ -69,6 +69,19 @@ def add_message():
 def resume():
     return render_template('resume.html')
 
+@app.errorhandler(404)
+def not_found(e):
+    return render_template('404.html'), 404
+
+@app.after_request
+def set_security_headers(resp):
+    resp.headers['X-Content-Type-Options'] = 'nosniff'
+    resp.headers['X-Frame-Options'] = 'DENY'
+    resp.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+    resp.headers['Permissions-Policy'] = 'camera=(), microphone=(), geolocation=()'
+    resp.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+    return resp
+
 @app.template_filter('prettydate')
 def prettydate(timestamp):
     dt = datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S')
@@ -90,7 +103,6 @@ def close_db(exception):
     db = g.pop('db', None)
     if db is not None:
         db.close()
-
 
 def init_db(db):
     if db.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='guestbook'").fetchone() is None:
