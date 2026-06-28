@@ -19,6 +19,17 @@ body::before {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    will-change: transform;
+    animation: nebula-pan 20s ease-in-out infinite alternate;
+}
+
+/* Slow pan/zoom of the cosmic background (cheap GPU transform) */
+@keyframes nebula-pan {
+    from { transform: translate3d(0, 0, 0) scale(1.08); }
+    to   { transform: translate3d(-3.5%, -3%, 0) scale(1.20); }
+}
+@media (prefers-reduced-motion: reduce) {
+    body::before { animation: none; }
 }
 
 h1, h2, h3 { font-family: 'Space Mono', monospace; }
@@ -87,4 +98,21 @@ nav a[aria-current="page"] { color: rgb(147 51 234); }
 .nav-link[aria-current="page"]::after {
     left: 0;
     right: 0;
+}
+
+/* Mobile menu expand/collapse */
+#mobile-menu {
+    overflow: hidden;        /* clip the links while collapsing */
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    opacity: 0;
+    transition: max-height .28s ease, padding .28s ease, opacity .28s ease;
+}
+#mobile-menu.open {
+    max-height: 16rem;       /* just needs to exceed the real height */
+    padding-top: 0.75rem;    /* py-3 applied only when open — padding can't collapse under max-height */
+    padding-bottom: 0.75rem;
+    opacity: 1;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
