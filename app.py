@@ -1,3 +1,4 @@
+from pdb import post_mortem
 from flask import Flask, render_template, redirect, url_for, request, g, flash
 from flask_wtf.csrf import CSRFProtect
 from datetime import datetime, timezone
@@ -12,13 +13,14 @@ app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
 app.secret_key = os.environ.get('SECRET_KEY', 'dev')
 csrf = CSRFProtect(app)
 DB_PATH = os.environ.get('DATABASE_PATH', 'guestbook.db')
+SITE_URL='https://louislizzadro.com'
 
 PROJECTS = [
     {
         'name': 'Personal Website',
         'description': 'Personal website deployed on an automated CI/CD pipeline.',
         'tech': ['Python', 'Flask', 'Jinja', 'Tailwind', 'Docker'],
-        'live': 'https://lllizzadro.fly.dev',
+        'live': 'https://louislizzadro.com',
         'source': 'https://github.com/lllizzadro/PersonalWebsiteFlask'
     },
     {
@@ -37,6 +39,27 @@ PROJECTS = [
     }
 ]
 
+@app.context_processor
+def inject_site_url():
+    return {'SITE_URL': SITE_URL}
+
+@app.before_request
+def canonical_host():
+    host = request.host.split(':')[0] #Strip any port
+    if host in ('www.louislizzadro.com', 'lllizzadro.fly.dev'):
+        return redirect(SITE_URL + request.full_path.rstrip('?'), code=301)
+
+@app.route('/robots.txt')
+def robots():
+    body = f"User-agent: *\nAllow: /\nSitemap: {SITE_URL}/sitemap.xml\n"
+    return app.response_class(body, mimetype='text/plain')
+
+@app.route('/sitemap.xml')
+def sitemap():
+    paths = ['/', '/guestbook', '/resume']
+    items = ''.join(f'<url><loc>{SITE_URL}{p}</loc></url>' for p in paths)
+    xml = f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{items}</urlset>'
+    return app.response_class(xml, mimetype='application/xml')
 
 @app.route('/')
 def home():
