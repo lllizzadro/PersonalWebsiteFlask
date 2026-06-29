@@ -1,6 +1,6 @@
 # Personal Website — Flask (Python)
 
-Louis Lizzadro's personal site — a standalone Flask app, **live at https://lllizzadro.fly.dev**. (Built to learn web dev; a retired Go/Gin twin is archived — work only here.)
+Louis Lizzadro's personal site — a standalone Flask app, **live at https://louislizzadro.com**. (Built to learn web dev; a retired Go/Gin twin is archived — work only here.)
 
 ## Working with Louis
 - **Hands-on learner.** Explain the concept and what's needed, let him write the code, then review and explain mistakes. Write code directly only to demo a brand-new concept or when he's stuck after trying. He validates the UI himself — don't generate screenshots unless asked.
@@ -14,6 +14,7 @@ Louis Lizzadro's personal site — a standalone Flask app, **live at https://lll
 - **POST/Redirect/GET** for state-changing forms. `add_message()` validates server-side (strip, reject empty, name ≤ 50 / message ≤ 1000), reports failures with `flash()` + redirect; `base.html` renders flashes above `{% block content %}` as a styled red alert (Tailwind utilities).
 - **CSRF + spam**: `CSRFProtect(app)` (Flask-WTF) guards all POSTs — forms need `{{ csrf_token() }}` (**parens required**, or you render the function not the token → every POST 400s); reuses `SECRET_KEY`. Guestbook also has an off-screen **honeypot** field (`website`) → silently dropped if filled. Links allowed (Jinja autoescapes; messages render as plain text).
 - **Behind Fly's proxy**: `ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)` — Fly terminates TLS and forwards over http, so without it Flask emits `http://` URLs (`_external=True`, `request.base_url`), breaking OG/canonical; with it they're `https://`.
+- **Canonical host**: `SITE_URL = 'https://louislizzadro.com'` (in `app.py`, exposed to templates via a context processor). A `@app.before_request` 301-redirects `www.louislizzadro.com` + the legacy `lllizzadro.fly.dev` → the apex (localhost left alone) so there's one canonical host. `base.html` sets `<link rel="canonical" href="{{ SITE_URL }}{{ request.path }}">`; `/robots.txt` + `/sitemap.xml` are Flask routes built from `SITE_URL`.
 - **Security headers** (`@app.after_request`): `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy` (camera/mic/geo off), HSTS (1yr). CSP intentionally omitted (fights the Tailwind CDN + inline scripts — revisit if moving to a build).
 - **`<head>` SEO** (`base.html`): per-page `{% block meta_description %}`; OG + Twitter tags reusing `{{ self.title() }}` / `{{ self.meta_description() }}` / `{{ request.base_url }}`; `og:image` → `static/og-image.jpg` (1200×630). Favicon = `static/favicon.svg` (`</>` drawn as strokes, font-independent).
 - **Errors**: `@app.errorhandler(404)` → `render_template('404.html'), 404` (themed, extends base; the `, 404` keeps the status). A template alone does nothing without the registered handler.
@@ -39,7 +40,8 @@ python app.py        # http://localhost:5000
 LAN/phone testing: `python -m flask --app app run --host=0.0.0.0 --port=5000` → `http://<computer-LAN-IP>:5000`.
 
 ## Deployment — Fly.io (live)
-- **App `lllizzadro`** → https://lllizzadro.fly.dev (region `ord`). Docker (`python:3.13-slim`, gunicorn `:8080`) + `fly.toml` + `.dockerignore`.
+- **App `lllizzadro`** → origin at https://lllizzadro.fly.dev (region `ord`). Docker (`python:3.13-slim`, gunicorn `:8080`) + `fly.toml` + `.dockerignore`.
+- **Custom domain** (live): `louislizzadro.com` (+ `www`), registered at **Cloudflare** and **proxied** (orange-cloud, SSL/TLS **Full (strict)**) in front of Fly → DDoS + hidden origin IP. Certs issued via `fly certs add`; Cloudflare DNS A/AAAA point at Fly. `www` + the bare `fly.dev` 301 → apex (see Stack & conventions). When proxied, real client IP is in `CF-Connecting-IP` (matters if rate-limiting is added later). Fly's cert auto-renews through the proxy; if a renewal ever fails, grey-cloud temporarily → renew → re-proxy.
 - **Persistent SQLite**: 1 GB volume `data` at `/data`; `DATABASE_PATH=/data/guestbook.db` survives redeploys. **Single machine only** — a volume binds to one machine; scaling out diverges the data.
 - **CI/CD** (`.github/workflows/fly-deploy.yml`): deploys on **push to `main`**. Flow: work on `dev` → PR → merge to `main` = production. Needs the `FLY_API_TOKEN` Actions secret (`fly tokens create deploy`).
 - **Ops**: `fly status` / `fly logs` / `fly open`; `fly ssh console` (only `/data` persists); `fly ssh sftp` for the DB. Manual deploy needs flyctl (Windows: `iwr https://fly.io/install.ps1 -useb | iex`).
@@ -51,5 +53,4 @@ LAN/phone testing: `python -m flask --app app run --host=0.0.0.0 --port=5000` �
 - ✅ Dark-only theming, glass UI, cosmic background (subtle pan), animated hamburger nav, scroll-reveal, themed 404, meta/OG/favicon, CSRF + honeypot, security headers, focus-visible, Fly.io push-to-deploy CI/CD.
 
 ## Ideas / deferred
-- **Custom domain** — buy one (~$12/yr), `fly certs add` + DNS records, then update hardcoded `lllizzadro.fly.dev` refs (résumé links, OG/canonical URLs). Biggest remaining "premium" lever.
 - **Tests in CI** — a pytest smoke suite (routes, 404, CSRF, guestbook insert/honeypot using a temp DB) wired into `.github/workflows/fly-deploy.yml` to gate deploys; keep `pytest` out of the prod image (dev-only dependency).
