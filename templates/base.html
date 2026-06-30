@@ -14,6 +14,20 @@
     <meta property="og:url" content="{{ request.base_url }}">
     <meta property="og:image" content="{{ url_for('static', filename='og-image.jpg', _external=True) }}">
     <meta name="twitter:card" content="summary_large_image">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Louis Lizzadro",
+      "url": "{{ SITE_URL }}",
+      "jobTitle": "Software Developer",
+      "address": { "@type": "PostalAddress", "addressLocality": "Nashville", "addressRegion": "TN", "addressCountry": "US" },
+      "sameAs": [
+        "https://github.com/lllizzadro",
+        "https://www.linkedin.com/in/louis-lizzadro/"
+      ]
+    }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
