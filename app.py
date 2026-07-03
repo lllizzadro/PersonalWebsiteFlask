@@ -1,19 +1,27 @@
-from flask import Flask, render_template, redirect, url_for, request, g, flash
+#Imports
+from flask import Flask, render_template, redirect, url_for, request, g, flash, session
+from functools import wraps
+from werkzeug.security import check_password_hash
 from flask_wtf.csrf import CSRFProtect
 from datetime import datetime, timezone
 import sqlite3
 import os
 from werkzeug.middleware.proxy_fix import ProxyFix
 
+#Initialize Flask app and variables
 app = Flask(__name__)
 # Fly terminates TLS and proxies to gunicorn over http; trust its forwarded headers so
 # url_for(_external=True) / request.base_url emit correct https:// URLs (OG tags, etc.).
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
+ADMIN_PASSWORD_HASH = os.environ.get('ADMIN_PASSWORD_HASH')
 app.secret_key = os.environ.get('SECRET_KEY', 'dev')
+app.config['SESSION_COOKIE_SECURE'] = app.secret_key != 'dev'
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 csrf = CSRFProtect(app)
 DB_PATH = os.environ.get('DATABASE_PATH', 'guestbook.db')
 SITE_URL='https://louislizzadro.com'
 
+#Projects
 PROJECTS = [
     {
         'name': 'Personal Website',
@@ -38,6 +46,40 @@ PROJECTS = [
     }
 ]
 
+#Admin
+def admin_required(view):
+    @wraps(view)
+    def wrapped_view(*args, **kwargs):
+        if not session.get('admin'):
+            return redirect(url_for('admin_login'))
+        return view(**kwargs)
+    return wrapped_view
+
+@app.route('/admin/login', methods=['GET', 'POST'])
+def admin_login():
+    if session.get('admin'):
+        return redirect(url_for('admin_dashboard'))
+    if request.method == 'POST':
+        password = request.form.get('password', '')
+        if ADMIN_PASSWORD_HASH and check_password_hash(ADMIN_PASSWORD_HASH, password):
+            session['admin'] = True
+            return redirect(url_for('admin_dashboard'))
+
+        flash('Invalid Password.')
+    return render_template('admin_login.html')
+
+@app.route('/admin')
+@admin_required
+def admin_dashboard():
+    return render_template('admin.html')
+
+@app.route('/admin/logout', methods=['POST'])
+@admin_required
+def admin_logout():
+    session.pop('admin', None)
+    return redirect(url_for('home'))
+
+#Routes
 @app.context_processor
 def inject_site_url():
     return {'SITE_URL': SITE_URL}
@@ -69,6 +111,15 @@ def guestbook():
     db = get_db()
     entries = db.execute("SELECT * FROM guestbook ORDER BY timestamp DESC").fetchall()
     return render_template('guestbook.html', entries=entries)
+
+@app.route('/admin/guestbook/<int:id>/delete', methods=['POST'])
+@admin_required
+def delete_entry(id):
+    db = get_db()
+    db.execute("DELETE FROM guestbook WHERE id = ?", (id,))
+    db.commit()
+    return redirect(url_for('guestbook'))
+
 
 @app.route('/guestbook', methods=['POST'])
 def add_message():

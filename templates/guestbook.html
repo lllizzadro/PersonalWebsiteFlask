@@ -27,10 +27,16 @@
                 <time datetime="{{ entry['timestamp'] | isodate }}" class="text-xs text-neutral-500">{{ entry['timestamp'] | prettydate }}</time>
             </div>
             <p class="text-sm text-neutral-400 leading-relaxed">{{ entry['message'] }}</p>
+            {% if session.get('admin') %}
+            <form method="POST" action="{{ url_for('delete_entry', id=entry['id']) }}" class="mt-4">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="self-center bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition-colors">Delete Entry</button>
+            </form>
+        {% endif %}
         </div>
+        
     {% endfor %}
 </div>
-
 
 <script src="{{ url_for('static', filename='js/localtime.js') }}"></script>
 {% endblock %}
